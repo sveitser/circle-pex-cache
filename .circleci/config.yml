@@ -16,7 +16,7 @@ jobs:
           command: |
             python3 -m venv ~/venv || true
             . ~/venv/bin/activate
-            pip install -U pex requests
+            pip install -U tox pex requests
             pex -vvvv requests tox pex -o pex.out
 
       - save_cache:
