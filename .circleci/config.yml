@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/work
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - deps-{{ .Branch }}
+            - deps-
+
+      - run: 
+          command: |
+            python3 -m venv ~/venv || true
+            . ~/venv/bin/activate
+            pip install -U pex requests
+            pex -vvvv requests tox pex -o pex.out
+
+      - save_cache:
+          key: deps-{{ .Branch }}-{{ epoch }}
+
+          paths:
+            - ~/venv
+            - ~/.pex
+
+      - run: tox 
+
+# vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2
